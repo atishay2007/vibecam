@@ -42,6 +42,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.mutableIntStateOf
+
 
 class MainActivity : ComponentActivity() {
 
@@ -74,23 +84,84 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
+            var selectedTab by remember {
+                mutableIntStateOf(1)
+            }
+
             var selectedPreset by remember {
                 mutableStateOf(
                     PresetRepository.presets.first()
                 )
             }
 
-            CameraPreview(
-                previewView = previewView,
-                selectedPreset = selectedPreset,
-                onPresetSelected = {
-                    println("CLICKED: ${it.name}")
-                    selectedPreset = it
-                },
-                onCaptureClick = {
-                    takePhoto()
+            Scaffold(
+
+                bottomBar = {
+
+                    NavigationBar {
+
+                        NavigationBarItem(
+                            selected = selectedTab == 0,
+                            onClick = { selectedTab = 0 },
+                            icon = {
+                                Icon(
+                                    Icons.Default.Home,
+                                    contentDescription = "Home"
+                                )
+                            }
+                        )
+
+                        NavigationBarItem(
+                            selected = selectedTab == 1,
+                            onClick = { selectedTab = 1 },
+                            icon = {
+                                Icon(
+                                    Icons.Default.PhotoCamera,
+                                    contentDescription = "Camera"
+                                )
+                            }
+                        )
+
+                        NavigationBarItem(
+                            selected = selectedTab == 2,
+                            onClick = { selectedTab = 2 },
+                            icon = {
+                                Icon(
+                                    Icons.Default.Person,
+                                    contentDescription = "Profile"
+                                )
+                            }
+                        )
+                    }
                 }
-            )
+
+            ) { paddingValues ->
+
+                when (selectedTab) {
+
+                    0 -> Text(
+                        "HOME SCREEN",
+                        modifier = Modifier.padding(paddingValues)
+                    )
+
+                    1 -> CameraPreview(
+                        previewView = previewView,
+                        selectedPreset = selectedPreset,
+                        onPresetSelected = {
+                            println("CLICKED: ${it.name}")
+                            selectedPreset = it
+                        },
+                        onCaptureClick = {
+                            takePhoto()
+                        }
+                    )
+
+                    2 -> Text(
+                        "PROFILE SCREEN",
+                        modifier = Modifier.padding(paddingValues)
+                    )
+                }
+            }
         }
     }
 
