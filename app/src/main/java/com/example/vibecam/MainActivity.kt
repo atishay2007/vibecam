@@ -27,7 +27,10 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -36,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 
@@ -174,13 +178,31 @@ fun CameraPreview(
             modifier = Modifier.fillMaxSize()
         )
 
-        Text(
-            text = "${selectedPreset.name}\nISO ${selectedPreset.iso} • ${selectedPreset.shutterSpeed}",
-            color = Color.White,
+        Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 80.dp)
-        )
+                .padding(top = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = selectedPreset.name,
+                color = Color.White,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "ISO ${selectedPreset.iso}",
+                color = Color.White
+            )
+
+            Text(
+                text = selectedPreset.shutterSpeed,
+                color = Color.White
+            )
+        }
 
         LazyRow(
             modifier = Modifier
