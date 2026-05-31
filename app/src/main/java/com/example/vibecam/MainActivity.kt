@@ -1,4 +1,11 @@
 package com.example.vibecam
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+
+import com.example.vibecam.presets.Preset
+import com.example.vibecam.presets.PresetRepository
 import androidx.compose.runtime.Composable
 import android.Manifest
 import android.content.ContentValues
@@ -148,6 +155,26 @@ fun CameraPreview(
             factory = { previewView },
             modifier = Modifier.fillMaxSize()
         )
+        LazyRow(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 120.dp)
+        ) {
+
+            items(PresetRepository.presets) { preset ->
+
+                Card(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+
+                    Text(
+                        text = preset.name,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
 
         Button(
             onClick = onCaptureClick,
