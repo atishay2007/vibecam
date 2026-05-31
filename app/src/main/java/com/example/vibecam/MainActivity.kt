@@ -26,10 +26,12 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -139,9 +141,10 @@ class MainActivity : ComponentActivity() {
 
                 when (selectedTab) {
 
-                    0 -> Text(
-                        "HOME SCREEN",
-                        modifier = Modifier.padding(paddingValues)
+                    0 -> HomeScreen(
+                        onOpenCamera = {
+                            selectedTab = 1
+                        }
                     )
 
                     1 -> CameraPreview(
@@ -234,6 +237,52 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun HomeScreen(
+    onOpenCamera: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Text(
+            text = "FEATURED PRESET",
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Tokyo Neon Rain",
+            fontSize = 28.sp
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text("ISO 800")
+        Text("1/8s")
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            "Bright neon signs and rainy streets."
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onOpenCamera,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Open Camera")
+        }
+    }
+}
 @Composable
 fun CameraPreview(
     previewView: PreviewView,
