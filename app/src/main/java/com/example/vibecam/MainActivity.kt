@@ -89,6 +89,9 @@ class MainActivity : ComponentActivity() {
             var selectedTab by remember {
                 mutableIntStateOf(1)
             }
+            var showPresetDetail by remember {
+                mutableStateOf(false)
+            }
 
             var selectedPreset by remember {
                 mutableStateOf(
@@ -141,11 +144,27 @@ class MainActivity : ComponentActivity() {
 
                 when (selectedTab) {
 
-                    0 -> HomeScreen(
-                        onOpenCamera = {
-                            selectedTab = 1
+                    0 -> {
+
+                        if (showPresetDetail) {
+
+                            PresetDetailScreen(
+                                preset = selectedPreset,
+                                onUsePreset = {
+                                    selectedTab = 1
+                                    showPresetDetail = false
+                                }
+                            )
+
+                        } else {
+
+                            HomeScreen(
+                                onOpenCamera = {
+                                    showPresetDetail = true
+                                }
+                            )
                         }
-                    )
+                    }
 
                     1 -> CameraPreview(
                         previewView = previewView,
@@ -279,7 +298,65 @@ fun HomeScreen(
             onClick = onOpenCamera,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Open Camera")
+            Text("View Preset")
+        }
+    }
+}
+
+@Composable
+fun PresetDetailScreen(
+    preset: Preset,
+    onUsePreset: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
+    ) {
+
+        Text(
+            text = preset.name,
+            fontSize = 30.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text("by ${preset.creator}")
+
+        Text("Category: ${preset.category}")
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(preset.look)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(preset.description)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text("ISO ${preset.iso}")
+        Text(preset.shutterSpeed)
+        Text("${preset.whiteBalance}K")
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text("Why it works")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        preset.whyItWorks.forEach {
+            Text("• $it")
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = onUsePreset,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Use Preset")
         }
     }
 }
