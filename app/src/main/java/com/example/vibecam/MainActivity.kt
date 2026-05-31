@@ -3,7 +3,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.vibecam.presets.Preset
 import com.example.vibecam.presets.PresetRepository
 import androidx.compose.runtime.Composable
@@ -31,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -65,8 +69,20 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+
+            var selectedPreset by remember {
+                mutableStateOf(
+                    PresetRepository.presets.first()
+                )
+            }
+
             CameraPreview(
                 previewView = previewView,
+                selectedPreset = selectedPreset,
+                onPresetSelected = {
+                    println("CLICKED: ${it.name}")
+                    selectedPreset = it
+                },
                 onCaptureClick = {
                     takePhoto()
                 }
@@ -146,6 +162,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CameraPreview(
     previewView: PreviewView,
+    selectedPreset: Preset,
+    onPresetSelected: (Preset) -> Unit,
     onCaptureClick: () -> Unit
 ) {
 
@@ -155,6 +173,15 @@ fun CameraPreview(
             factory = { previewView },
             modifier = Modifier.fillMaxSize()
         )
+
+        Text(
+            text = "${selectedPreset.name}\nISO ${selectedPreset.iso} • ${selectedPreset.shutterSpeed}",
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 80.dp)
+        )
+
         LazyRow(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -164,12 +191,26 @@ fun CameraPreview(
             items(PresetRepository.presets) { preset ->
 
                 Card(
+                    onClick = {
+                        onPresetSelected(preset)
+                    },
+                    colors = CardDefaults.cardColors(
+                        containerColor =
+                            if (preset.id == selectedPreset.id)
+                                Color(0xFFFF7A00)
+                            else
+                                Color.White
+                    ),
                     modifier = Modifier.padding(horizontal = 8.dp),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
-
                     Text(
                         text = preset.name,
+                        color =
+                            if (preset.id == selectedPreset.id)
+                                Color.White
+                            else
+                                Color.Black,
                         modifier = Modifier.padding(16.dp)
                     )
                 }
